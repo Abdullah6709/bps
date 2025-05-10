@@ -21,16 +21,20 @@ import {
   InputAdornment,
   useTheme,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import {
   CancelScheduleSend as CancelScheduleSendIcon,
   AccountBalanceWallet as AccountBalanceWalletIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  MoreVert as MoreVertIcon,
   Search as SearchIcon,
   Book as BookOnlineIcon,
   LocalShipping as LocalShippingIcon,
+  Visibility as VisibilityIcon,
 } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -68,14 +72,69 @@ const cardData = [
   },
 ];
 
-const createData = (id, adminId, name, contact) => ({
+const createData = (id, orderby, date, namep, pickup, named, drop, contact) => ({
   id,
-  adminId,
-  name,
+  orderby,
+  date,
+  namep,
+  pickup,
+  named,
+  drop,
   contact,
 });
 
-const rows = [];
+const initialRows = [
+  createData(
+    1,
+    "Customer A",
+    "2023-05-15",
+    "John Smith",
+    "Mumbai",
+    "Raj Sharma",
+    "Delhi",
+    "9876543210"
+  ),
+  createData(
+    2,
+    "Customer B",
+    "2023-05-16",
+    "Priya Patel",
+    "Bangalore",
+    "Amit Singh",
+    "Hyderabad",
+    "8765432109"
+  ),
+  createData(
+    3,
+    "Customer C",
+    "2023-05-17",
+    "Rahul Verma",
+    "Chennai",
+    "Neha Gupta",
+    "Kolkata",
+    "7654321098"
+  ),
+  createData(
+    4,
+    "Customer D",
+    "2023-05-18",
+    "Sneha Joshi",
+    "Pune",
+    "Vikram Rao",
+    "Ahmedabad",
+    "6543210987"
+  ),
+  createData(
+    5,
+    "Customer E",
+    "2023-05-19",
+    "Arun Kumar",
+    "Jaipur",
+    "Meera Nair",
+    "Lucknow",
+    "5432109876"
+  ),
+];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) return -1;
@@ -102,9 +161,9 @@ const headCells = [
   { id: "sno", label: "S.No", sortable: false },
   { id: "orderby", label: "Order By", sortable: true },
   { id: "date", label: "Date", sortable: true },
-  { id: "namep", label: "Name", sortable: true },
+  { id: "namep", label: "Sender Name", sortable: true },
   { id: "pickup", label: "Pick Up", sortable: false },
-  { id: "named", label: "Name", sortable: false },
+  { id: "named", label: "Receiver Name", sortable: false },
   { id: "drop", label: "Drop", sortable: false },
   { id: "contact", label: "Contact", sortable: false },
   { id: "action", label: "Action", sortable: false },
@@ -112,7 +171,7 @@ const headCells = [
 
 const BookingCard = () => {
   const theme = useTheme();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const cardColor = "#0155a5";
   const cardLightColor = "#e6f0fa";
   const [activeCard, setActiveCard] = useState(null);
@@ -121,9 +180,12 @@ const BookingCard = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
+  const [bookings, setBookings] = useState(initialRows);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [bookingToDelete, setBookingToDelete] = useState(null);
 
   const handleAdd = () => {
-    navigate("/bookingform"); 
+    navigate("/booking/new");
   };
 
   const handleCardClick = (cardId) => {
@@ -148,11 +210,38 @@ const BookingCard = () => {
     setPage(0);
   };
 
-  const filteredRows = rows.filter(
+  const handleView = (row) => {
+    navigate(`/booking/${row.id}`, { state: { booking: row, mode: 'view' } });
+  };
+
+  const handleEdit = (row) => {
+    navigate(`/booking/${row.id}`, { state: { booking: row, mode: 'edit' } });
+  };
+
+  const handleDeleteClick = (row) => {
+    setBookingToDelete(row);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    setBookings(bookings.filter(booking => booking.id !== bookingToDelete.id));
+    setDeleteDialogOpen(false);
+    setBookingToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setBookingToDelete(null);
+  };
+
+  const filteredRows = bookings.filter(
     (row) =>
-      row.adminId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.contact.includes(searchTerm)
+      (row.orderby && row.orderby.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (row.namep && row.namep.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (row.named && row.named.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (row.pickup && row.pickup.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (row.drop && row.drop.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (row.contact && row.contact.includes(searchTerm))
   );
 
   const emptyRows = Math.max(0, (1 + page) * rowsPerPage - filteredRows.length);
@@ -288,7 +377,7 @@ const BookingCard = () => {
                 {headCells.map((headCell) => (
                   <TableCell
                     key={headCell.id}
-                    sx={{ fontWeight: "bold" }}
+                    sx={{ fontWeight: "bold", color: "white" }}
                     sortDirection={orderBy === headCell.id ? order : false}
                   >
                     {headCell.sortable ? (
@@ -296,6 +385,7 @@ const BookingCard = () => {
                         active={orderBy === headCell.id}
                         direction={orderBy === headCell.id ? order : "asc"}
                         onClick={() => handleRequestSort(headCell.id)}
+                        sx={{ color: "white !important" }}
                       >
                         {headCell.label}
                       </TableSortLabel>
@@ -312,19 +402,38 @@ const BookingCard = () => {
                 .map((row, index) => (
                   <TableRow key={row.id} hover>
                     <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                    <TableCell>{row.adminId}</TableCell>
-                    <TableCell>{row.name}</TableCell>
+                    <TableCell>{row.orderby}</TableCell>
+                    <TableCell>{row.date}</TableCell>
+                    <TableCell>{row.namep}</TableCell>
+                    <TableCell>{row.pickup}</TableCell>
+                    <TableCell>{row.named}</TableCell>
+                    <TableCell>{row.drop}</TableCell>
                     <TableCell>{row.contact}</TableCell>
                     <TableCell>
                       <Box sx={{ display: "flex", gap: 1 }}>
-                        <IconButton size="small" color="primary">
+                        <IconButton
+                          size="small"
+                          color="info"
+                          onClick={() => handleView(row)}
+                          title="View"
+                        >
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          onClick={() => handleEdit(row)}
+                          title="Edit"
+                        >
                           <EditIcon fontSize="small" />
                         </IconButton>
-                        <IconButton size="small" color="error">
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => handleDeleteClick(row)}
+                          title="Delete"
+                        >
                           <DeleteIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton size="small" color="default">
-                          <MoreVertIcon fontSize="small" />
                         </IconButton>
                       </Box>
                     </TableCell>
@@ -332,7 +441,7 @@ const BookingCard = () => {
                 ))}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={5} />
+                  <TableCell colSpan={9} />
                 </TableRow>
               )}
             </TableBody>
@@ -348,6 +457,20 @@ const BookingCard = () => {
           />
         </TableContainer>
       </Box>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete booking #{bookingToDelete?.id}?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>Cancel</Button>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

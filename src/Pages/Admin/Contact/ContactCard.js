@@ -25,7 +25,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 const ContactCard = () => {
   const [formData, setFormData] = useState({
     name: '',
-    number: '',
+    contactNumber: '',
     email: '',
     address: '',
   });
@@ -53,7 +53,7 @@ const ContactCard = () => {
       setContacts((prev) => [...prev, formData]);
     }
 
-    setFormData({ name: '', number: '', email: '', address: '' });
+    setFormData({ name: '', contactNumber: '', email: '', address: '' });
   };
 
   const handleDelete = (index) => {
@@ -68,7 +68,7 @@ const ContactCard = () => {
 
   const handleView = (contact) => {
     alert(
-      `Viewing Contact:\n\nName: ${contact.name}\nNumber: ${contact.number}\nEmail: ${contact.email}\nAddress: ${contact.address}`
+      `Viewing Contact:\n\nName: ${contact.name}\nNumber: ${contact.contactNumber}\nEmail: ${contact.email}\nAddress: ${contact.address}`
     );
   };
 
@@ -95,7 +95,7 @@ const ContactCard = () => {
           <TextField
             label="Contact Number"
             name="number"
-            value={formData.number}
+            value={formData.contactNumber}
             onChange={handleChange}
             fullWidth
             size="small"

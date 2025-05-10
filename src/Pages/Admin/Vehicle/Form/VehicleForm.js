@@ -19,15 +19,15 @@ const validationSchema = Yup.object({
   registrationNumber: Yup.string().required("Required"),
   registrationDate: Yup.string().required("Required"),
   regExpiryDate: Yup.string().required("Required"),
-  makeModel: Yup.string().required("Required"),
-  yearOfManufacture: Yup.string().required("Required"),
+  vehicleModel: Yup.string().required("Required"),
+  manufactureYear: Yup.string().required("Required"),
   ownedBy: Yup.string().required("Required"),
   currentLocation: Yup.string().required("Required"),
-  dateOfPurchase: Yup.string().required("Required"),
+  dateofPurchase: Yup.string().required("Required"),
   purchasedFrom: Yup.string(),
-  purchasedUnder: Yup.string(),
+  PurchasedUnder: Yup.string(),
   purchasePrice: Yup.number(),
-  depreciationPercent: Yup.number(),
+  deprecidepreciationPercentationPercent: Yup.number(),
   depreciationValue: Yup.number(),
   currentValue: Yup.number(),
 
@@ -49,12 +49,12 @@ const validationSchema = Yup.object({
 
   firstRegValidUpto: Yup.date(),
   renewalDate: Yup.date(),
-  renewalValidUpto: Yup.date().min(
+  renewalrenewalValidUptoValidUpto: Yup.date().min(
     Yup.ref("renewalDate"),
     "Must be after renewal date"
   ),
 
-  additionalComments: Yup.string(),
+  addcomment: Yup.string(),
 });
 
 const VehicleForm = () => {
@@ -63,13 +63,13 @@ const VehicleForm = () => {
       registrationNumber: "",
       registrationDate: "",
       regExpiryDate: "",
-      makeModel: "",
-      yearOfManufacture: "",
+      vehicleModel: "",
+      manufactureYear: "",
       ownedBy: "",
       currentLocation: "",
-      dateOfPurchase: "",
+      dateofPurchase: "",
       purchasedFrom: "",
-      purchasedUnder: "",
+      PurchasedUnder: "",
       purchasePrice: "",
       depreciationPercent: "",
       depreciationValue: "",
@@ -89,7 +89,7 @@ const VehicleForm = () => {
       renewalDate: "",
       renewalValidUpto: "",
 
-      additionalComments: "",
+      addcomment: "",
     },
     validationSchema,
     onSubmit: (values) => {
