@@ -140,6 +140,7 @@ const BookingForm = () => {
       >
         {({ values, handleChange, setFieldValue }) => (
           <Form>
+            
             <Box sx={{ p: 3, maxWidth: 1200, mx: "auto" }}>
               <Grid container spacing={2}>
                 <Grid size={{xs:12, sm:6}}>

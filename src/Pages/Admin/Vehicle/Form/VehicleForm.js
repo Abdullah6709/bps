@@ -74,21 +74,17 @@ const VehicleForm = () => {
       depreciationPercent: "",
       depreciationValue: "",
       currentValue: "",
-
       currentInsuranceProvider: "",
       policyNumber: "",
       policyType: "",
       policyStartDate: "",
       policyEndDate: "",
       policyPremium: "",
-
       lastFitnessRenewalDate: "",
       currentFitnessValidUpto: "",
-
       firstRegValidUpto: "",
       renewalDate: "",
       renewalValidUpto: "",
-
       addcomment: "",
     },
     validationSchema,
@@ -161,31 +157,31 @@ const VehicleForm = () => {
           <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               label="Make/Model"
-              name="makeModel"
+              name="vehicleModel"
               fullWidth
-              value={formik.values.makeModel}
+              value={formik.values.vehicleModel}
               onChange={formik.handleChange}
               error={
-                formik.touched.makeModel && Boolean(formik.errors.makeModel)
+                formik.touched.vehicleModel && Boolean(formik.errors.vehicleModel)
               }
-              helperText={formik.touched.makeModel && formik.errors.makeModel}
+              helperText={formik.touched.vehicleModel && formik.errors.vehicleModel}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               select
               label="Year of Manufacture"
-              name="yearOfManufacture"
+              name="manufactureYear"
               fullWidth
-              value={formik.values.yearOfManufacture}
+              value={formik.values.manufactureYear}
               onChange={formik.handleChange}
               error={
-                formik.touched.yearOfManufacture &&
-                Boolean(formik.errors.yearOfManufacture)
+                formik.touched.manufactureYear &&
+                Boolean(formik.errors.manufactureYear)
               }
               helperText={
-                formik.touched.yearOfManufacture &&
-                formik.errors.yearOfManufacture
+                formik.touched.manufactureYear &&
+                formik.errors.manufactureYear
               }
             >
               {years.map((year) => (
@@ -225,18 +221,18 @@ const VehicleForm = () => {
           <Grid size={{ xs: 12, sm: 4 }}>
             <TextField
               label="Date of Purchase"
-              name="dateOfPurchase"
+              name="dateofPurchase"
               type="date"
               InputLabelProps={{ shrink: true }}
               fullWidth
-              value={formik.values.dateOfPurchase}
+              value={formik.values.dateofPurchase}
               onChange={formik.handleChange}
               error={
-                formik.touched.dateOfPurchase &&
-                Boolean(formik.errors.dateOfPurchase)
+                formik.touched.dateofPurchase &&
+                Boolean(formik.errors.dateofPurchase)
               }
               helperText={
-                formik.touched.dateOfPurchase && formik.errors.dateOfPurchase
+                formik.touched.dateofPurchase && formik.errors.dateofPurchase
               }
             />
           </Grid>
@@ -252,9 +248,9 @@ const VehicleForm = () => {
           <Grid size={{ xs: 12, sm: 4 }}>
             <TextField
               label="Purchased Under"
-              name="purchasedUnder"
+              name="PurchasedUnder"
               fullWidth
-              value={formik.values.purchasedUnder}
+              value={formik.values.PurchasedUnder}
               onChange={formik.handleChange}
             />
           </Grid>
@@ -448,12 +444,12 @@ const VehicleForm = () => {
           Additional Comments
         </Typography>
         <TextField
-          name="additionalComments"
+          name="addcomment"
           label="Additional Comments"
           multiline
           rows={4}
           fullWidth
-          value={formik.values.additionalComments}
+          value={formik.values.addcomment}
           onChange={formik.handleChange}
         />
 

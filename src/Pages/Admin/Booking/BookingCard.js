@@ -185,7 +185,7 @@ const BookingCard = () => {
   const [bookingToDelete, setBookingToDelete] = useState(null);
 
   const handleAdd = () => {
-    navigate("/booking/new");
+    navigate("/bookingform");
   };
 
   const handleCardClick = (cardId) => {
@@ -210,12 +210,16 @@ const BookingCard = () => {
     setPage(0);
   };
 
-  const handleView = (row) => {
-    navigate(`/booking/${row.id}`, { state: { booking: row, mode: 'view' } });
-  };
-
+ const handleView = (row) => {
+  navigate('/bookingform', { 
+    state: { 
+      booking: row, 
+      mode: 'view'  
+    } 
+  });
+};
   const handleEdit = (row) => {
-    navigate(`/booking/${row.id}`, { state: { booking: row, mode: 'edit' } });
+    navigate('/bookingform', { state: { booking: row, mode: 'edit' } });
   };
 
   const handleDeleteClick = (row) => {

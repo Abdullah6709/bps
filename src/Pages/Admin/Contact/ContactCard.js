@@ -94,7 +94,7 @@ const ContactCard = () => {
         <Grid size={{xs:12, sm:3}}>
           <TextField
             label="Contact Number"
-            name="number"
+            name="contactNumber"
             value={formData.contactNumber}
             onChange={handleChange}
             fullWidth
