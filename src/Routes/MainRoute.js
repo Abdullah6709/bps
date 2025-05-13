@@ -20,6 +20,8 @@ import CustomerForm from '../Pages/Admin/Customer/Form/CustomerForm';
 import BookingForm from '../Pages/Admin/Booking/Form/BookingForm';
 import QuotationForm from  '../Pages/Admin/Quotation/Form/QuotationForm';
 import VehicleForm from '../Pages/Admin/Vehicle/Form/VehicleForm';
+import ViewBooking from '../Pages/Admin/Booking/Form/ViewBooking';
+import EditBooking from '../Pages/Admin/Booking/Form/EditBooking'
 const MainRoute = () => {
     const isAuthenticated = true; // Replace with real auth check
 
@@ -30,6 +32,9 @@ const MainRoute = () => {
                 {/* Booking Routing */}
                 <Route path='/booking' element={<BookingCard />} />
                 <Route path='/bookingform' element={<BookingForm />} />
+                <Route path='/viewbooking' element={<ViewBooking/>} />
+                  <Route path='/editbooking' element={<EditBooking/>} />
+
                 
 
 

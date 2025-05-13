@@ -211,7 +211,7 @@ const BookingCard = () => {
   };
 
  const handleView = (row) => {
-  navigate('/bookingform', { 
+  navigate('/viewbooking', { 
     state: { 
       booking: row, 
       mode: 'view'  
@@ -219,7 +219,7 @@ const BookingCard = () => {
   });
 };
   const handleEdit = (row) => {
-    navigate('/bookingform', { state: { booking: row, mode: 'edit' } });
+    navigate('/editbooking', { state: { booking: row, mode: 'edit' } });
   };
 
   const handleDeleteClick = (row) => {
