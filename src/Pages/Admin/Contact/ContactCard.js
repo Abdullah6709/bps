@@ -33,16 +33,21 @@ const ContactCard = () => {
   const [contacts, setContacts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [editIndex, setEditIndex] = useState(null);
+  const [page, setPage] = useState(1);
+  const [isViewMode, setIsViewMode] = useState(false);
+  const rowsPerPage = 5;
 
   const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    if (!isViewMode) {
+      setFormData((prev) => ({
+        ...prev,
+        [e.target.name]: e.target.value,
+      }));
+    }
   };
 
   const handleAddContact = () => {
-    if (!formData.name || !formData.number) return;
+    if (!formData.name || !formData.contactNumber) return;
 
     if (editIndex !== null) {
       const updatedContacts = [...contacts];
@@ -54,34 +59,56 @@ const ContactCard = () => {
     }
 
     setFormData({ name: '', contactNumber: '', email: '', address: '' });
+    setIsViewMode(false);
   };
 
   const handleDelete = (index) => {
     setContacts((prev) => prev.filter((_, i) => i !== index));
-    if (editIndex === index) setEditIndex(null); // Reset edit if deleting that item
+    if (editIndex === index) {
+      setEditIndex(null);
+      setIsViewMode(false);
+      setFormData({ name: '', contactNumber: '', email: '', address: '' });
+    }
   };
 
   const handleEdit = (index) => {
     setFormData(contacts[index]);
     setEditIndex(index);
+    setIsViewMode(false);
   };
 
   const handleView = (contact) => {
-    alert(
-      `Viewing Contact:\n\nName: ${contact.name}\nNumber: ${contact.contactNumber}\nEmail: ${contact.email}\nAddress: ${contact.address}`
-    );
+    setFormData(contact);
+    setIsViewMode(true);
+  };
+
+  const handleCancel = () => {
+    setFormData({ name: '', contactNumber: '', email: '', address: '' });
+    setEditIndex(null);
+    setIsViewMode(false);
   };
 
   const filteredContacts = contacts.filter((contact) =>
     contact.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Pagination logic
+  const count = Math.ceil(filteredContacts.length / rowsPerPage);
+  const paginatedContacts = filteredContacts.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage
+  );
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
   return (
     <Box p={3}>
       <Typography variant="h6" mb={2}>Contact List</Typography>
 
       <Grid container spacing={2} mb={2}>
-        <Grid size={{xs:12, sm:3}}>
+        <Grid item xs={12} sm={3}>
           <TextField
             label="Name"
             name="name"
@@ -89,9 +116,10 @@ const ContactCard = () => {
             onChange={handleChange}
             fullWidth
             size="small"
+            disabled={isViewMode}
           />
         </Grid>
-        <Grid size={{xs:12, sm:3}}>
+        <Grid item xs={12} sm={3}>
           <TextField
             label="Contact Number"
             name="contactNumber"
@@ -99,9 +127,10 @@ const ContactCard = () => {
             onChange={handleChange}
             fullWidth
             size="small"
+            disabled={isViewMode}
           />
         </Grid>
-        <Grid size={{xs:12, sm:3}}>
+        <Grid item xs={12} sm={3}>
           <TextField
             label="Email"
             name="email"
@@ -109,9 +138,10 @@ const ContactCard = () => {
             onChange={handleChange}
             fullWidth
             size="small"
+            disabled={isViewMode}
           />
         </Grid>
-        <Grid size={{xs:12, sm:3}}>
+        <Grid item xs={12} sm={3}>
           <TextField
             label="Address"
             name="address"
@@ -119,18 +149,31 @@ const ContactCard = () => {
             onChange={handleChange}
             fullWidth
             size="small"
+            disabled={isViewMode}
           />
         </Grid>
       </Grid>
 
       <Grid container justifyContent="space-between" alignItems="center" mb={2}>
-        <Button
-          variant="contained"
-          onClick={handleAddContact}
-          sx={{ backgroundColor: '#004C99' }}
-        >
-          {editIndex !== null ? 'Update Contact' : '+ Contact'}
-        </Button>
+        <Box>
+          <Button
+            variant="contained"
+            onClick={handleAddContact}
+            sx={{ backgroundColor: '#004C99', mr: 2 }}
+            disabled={isViewMode}
+          >
+            {editIndex !== null ? 'Update Contact' : '+ Contact'}
+          </Button>
+          {(isViewMode || editIndex !== null) && (
+            <Button
+              variant="outlined"
+              onClick={handleCancel}
+              color="error"
+            >
+              Cancel
+            </Button>
+          )}
+        </Box>
         <TextField
           size="small"
           placeholder="Search"
@@ -161,22 +204,31 @@ const ContactCard = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredContacts.length > 0 ? (
-              filteredContacts.map((contact, index) => (
+            {paginatedContacts.length > 0 ? (
+              paginatedContacts.map((contact, index) => (
                 <TableRow key={index}>
-                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{(page - 1) * rowsPerPage + index + 1}</TableCell>
                   <TableCell>{contact.name}</TableCell>
-                  <TableCell>{contact.number}</TableCell>
+                  <TableCell>{contact.contactNumber}</TableCell>
                   <TableCell>{contact.email}</TableCell>
                   <TableCell>{contact.address}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleView(contact)} color="primary">
+                    <IconButton 
+                      onClick={() => handleView(contact)} 
+                      color="primary"
+                    >
                       <VisibilityIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleEdit(index)} color="warning">
+                    <IconButton 
+                      onClick={() => handleEdit((page - 1) * rowsPerPage + index)} 
+                      color="warning"
+                    >
                       <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(index)} color="error">
+                    <IconButton 
+                      onClick={() => handleDelete((page - 1) * rowsPerPage + index)} 
+                      color="error"
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -196,9 +248,17 @@ const ContactCard = () => {
         </Table>
       </TableContainer>
 
-      <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
-        <Pagination count={1} shape="rounded" size="small" />
-      </Box>
+      {filteredContacts.length > 0 && (
+        <Box display="flex" justifyContent="center" mt={2}>
+          <Pagination 
+            count={count} 
+            page={page}
+            onChange={handlePageChange}
+            shape="rounded" 
+            size="small" 
+          />
+        </Box>
+      )}
     </Box>
   );
 };
