@@ -22,7 +22,6 @@ const states = ["State A", "State B", "State C"];
 const cities = ["City A", "City B", "City C"];
 const payOptions = ["None", "To Pay", "Paid"];
 
-// Function to generate random data
 const generateRandomData = () => {
   const randomDate = () => {
     const start = new Date();
@@ -40,7 +39,8 @@ const generateRandomData = () => {
   });
 
   return {
-    firstName: ["John", "Jane", "Robert", "Emily"][Math.floor(Math.random() * 4)],
+    firstName: ["John", "Jane", "Robert", "Emily"][Math.floor(Math.random() * 4)], 
+    
     lastName: ["Doe", "Smith", "Johnson", "Williams"][Math.floor(Math.random() * 4)],
     startStationName: stationOptions[Math.floor(Math.random() * stationOptions.length)],
     endStation: stationOptions[Math.floor(Math.random() * stationOptions.length)],

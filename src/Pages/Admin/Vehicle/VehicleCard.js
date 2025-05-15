@@ -25,9 +25,8 @@ import {
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
-  MoreVert as MoreVertIcon,
   Search as SearchIcon,
-  
+  Visibility as VisibilityIcon,
   LocalShipping as LocalShippingIcon,
 } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
@@ -36,41 +35,65 @@ const cardData = [
   {
     id: 1,
     title: "Available Vehicle",
-    value: "0",
-    duration: "NaN% (30 Days)",
+    value: "12",
+    duration: "+15% (30 Days)",
     icon: <LocalShippingIcon fontSize="large" />,
   },
   {
     id: 2,
-    title: "Totle Vehicle ",
-    value: "0",
-    duration: "NaN% (30 Days)",
+    title: "Total Vehicle",
+    value: "45",
+    duration: "+8% (30 Days)",
     icon: <LocalShippingIcon fontSize="large" />,
   },
   {
     id: 3,
-    title: "Deacive Vehicle",
-    value: "0",
-    duration: "(30 Days)",
+    title: "Deactive Vehicle",
+    value: "5",
+    duration: "-2% (30 Days)",
     icon: <LocalShippingIcon fontSize="large" />,
   },
   {
     id: 4,
     title: "Blacklisted Vehicle",
-    value: "0",
-    duration: "(30 Days)",
+    value: "3",
+    duration: "+1% (30 Days)",
     icon: <LocalShippingIcon fontSize="large" />,
   },
 ];
 
-const createData = (id, adminId, name, contact) => ({
-  id,
-  adminId,
-  name,
-  contact,
-});
+// Function to generate random vehicle data
+const generateRandomVehicles = () => {
+  const locations = ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia"];
+  const models = ["Toyota Camry", "Honda Accord", "Ford F-150", "Chevrolet Silverado", "Tesla Model 3", "BMW X5"];
+  const firstNames = ["John", "Jane", "Robert", "Emily", "Michael", "Sarah"];
+  const lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Miller"];
+  
+  return Array.from({ length: 25 }, (_, i) => {
+    const location = locations[Math.floor(Math.random() * locations.length)];
+    const model = models[Math.floor(Math.random() * models.length)];
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    
+    return {
+      id: `VH${1000 + i}`,
+      vehicleId: `VH${1000 + i}`,
+      location: location,
+      ownerName: `${firstName} ${lastName}`,
+      vehicleModel: model,
+      status: Math.random() > 0.8 ? "Inactive" : "Active",
+      registrationDate: new Date(Date.now() - Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 365)).toLocaleDateString(),
+      // Adding more detailed data that might be needed for view/edit pages
+      registrationNumber: `REG${Math.floor(Math.random() * 10000)}`,
+      manufactureYear: 2015 + Math.floor(Math.random() * 8),
+      purchaseDate: new Date(Date.now() - Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 365 * 3)).toLocaleDateString(),
+      insuranceProvider: ["Geico", "State Farm", "Progressive", "Allstate"][Math.floor(Math.random() * 4)],
+      policyNumber: `POL${Math.floor(Math.random() * 100000)}`,
+    };
+  });
+};
 
-const rows = [];
+const initialRows = generateRandomVehicles();
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) return -1;
@@ -95,10 +118,11 @@ function stableSort(array, comparator) {
 
 const headCells = [
   { id: "sno", label: "S.No", sortable: false },
-  { id: "vehicleid", label: "Vehicle ID", sortable: true },
+  { id: "vehicleId", label: "Vehicle ID", sortable: true },
   { id: "location", label: "Location", sortable: true },
-  { id: "ownername", label: "Owner Name", sortable: true },
-  { id: "vehiclemodel", label: "Vehicle Model", sortable: false },
+  { id: "ownerName", label: "Owner Name", sortable: true },
+  { id: "vehicleModel", label: "Vehicle Model", sortable: true },
+  { id: "status", label: "Status", sortable: true },
   { id: "action", label: "Action", sortable: false },
 ];
 
@@ -109,10 +133,11 @@ const VehicleCard = () => {
   const cardLightColor = "#e6f0fa";
   const [activeCard, setActiveCard] = useState(null);
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("name");
+  const [orderBy, setOrderBy] = useState("ownerName");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
+  const [rows, setRows] = useState(initialRows);
 
   const handleAdd = () => {
     navigate("/vehicleform"); 
@@ -140,11 +165,33 @@ const VehicleCard = () => {
     setPage(0);
   };
 
+  const handleView = (vehicle) => {
+    // Navigate to view page with vehicle ID as parameter
+    navigate('/viewvehicle', { 
+      state: { vehicleData: vehicle } 
+    });
+  };
+
+  const handleEdit = (vehicle) => {
+    // Navigate to edit page with vehicle ID as parameter
+    navigate('/editvehicle', { 
+      state: { vehicleData: vehicle } 
+    });
+  };
+
+  const handleDelete = (row) => {
+    if (window.confirm(`Are you sure you want to delete vehicle ${row.vehicleId}?`)) {
+      setRows(rows.filter(r => r.id !== row.id));
+      alert(`Vehicle ${row.vehicleId} has been deleted`);
+    }
+  };
+
   const filteredRows = rows.filter(
     (row) =>
-      row.adminId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.contact.includes(searchTerm)
+      row.vehicleId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.ownerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.vehicleModel.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const emptyRows = Math.max(0, (1 + page) * rowsPerPage - filteredRows.length);
@@ -255,7 +302,7 @@ const VehicleCard = () => {
         ))}
       </Grid>
 
-      {/* Admin Table */}
+      {/* Vehicle Table */}
       <Box>
         <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
           <TextField
@@ -280,7 +327,7 @@ const VehicleCard = () => {
                 {headCells.map((headCell) => (
                   <TableCell
                     key={headCell.id}
-                    sx={{ fontWeight: "bold" }}
+                    sx={{ color: "white", fontWeight: "bold" }}
                     sortDirection={orderBy === headCell.id ? order : false}
                   >
                     {headCell.sortable ? (
@@ -288,6 +335,7 @@ const VehicleCard = () => {
                         active={orderBy === headCell.id}
                         direction={orderBy === headCell.id ? order : "asc"}
                         onClick={() => handleRequestSort(headCell.id)}
+                        sx={{ color: "white !important" }}
                       >
                         {headCell.label}
                       </TableSortLabel>
@@ -304,19 +352,38 @@ const VehicleCard = () => {
                 .map((row, index) => (
                   <TableRow key={row.id} hover>
                     <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                    <TableCell>{row.adminId}</TableCell>
-                    <TableCell>{row.name}</TableCell>
-                    <TableCell>{row.contact}</TableCell>
+                    <TableCell>{row.vehicleId}</TableCell>
+                    <TableCell>{row.location}</TableCell>
+                    <TableCell>{row.ownerName}</TableCell>
+                    <TableCell>{row.vehicleModel}</TableCell>
+                    <TableCell sx={{ color: row.status === "Active" ? "success.main" : "error.main" }}>
+                      {row.status}
+                    </TableCell>
                     <TableCell>
                       <Box sx={{ display: "flex", gap: 1 }}>
-                        <IconButton size="small" color="primary">
+                        <IconButton 
+                          size="small" 
+                          color="primary"
+                          onClick={() => handleEdit(row)}
+                          aria-label="edit"
+                        >
                           <EditIcon fontSize="small" />
                         </IconButton>
-                        <IconButton size="small" color="error">
-                          <DeleteIcon fontSize="small" />
+                        <IconButton 
+                          size="small" 
+                          color="info"
+                          onClick={() => handleView(row)}
+                          aria-label="view"
+                        >
+                          <VisibilityIcon fontSize="small" />
                         </IconButton>
-                        <IconButton size="small" color="default">
-                          <MoreVertIcon fontSize="small" />
+                        <IconButton 
+                          size="small" 
+                          color="error"
+                          onClick={() => handleDelete(row)}
+                          aria-label="delete"
+                        >
+                          <DeleteIcon fontSize="small" />
                         </IconButton>
                       </Box>
                     </TableCell>
@@ -324,7 +391,7 @@ const VehicleCard = () => {
                 ))}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={5} />
+                  <TableCell colSpan={7} />
                 </TableRow>
               )}
             </TableBody>

@@ -24,6 +24,8 @@ import ViewBooking from '../Pages/Admin/Booking/Form/ViewBooking';
 import EditBooking from '../Pages/Admin/Booking/Form/EditBooking';
 import ViewQuotation from '../Pages/Admin/Quotation/Form/ViewQuotation';
 import EditQuotation from '../Pages/Admin/Quotation/Form/EditQuotation';
+import ViewVehicle from '../Pages/Admin/Vehicle/Form/ViewVehicle'
+import EditVehicle from '../Pages/Admin/Vehicle/Form/EditVehicle'
 const MainRoute = () => {
     const isAuthenticated = true; // Replace with real auth check
 
@@ -55,7 +57,12 @@ const MainRoute = () => {
                 {/* vehicle routing */}
                 <Route path='/vehicle' element={<VehicleCard />} />
                 <Route path='/vehicleform' element={<VehicleForm/>} />
-                
+                <Route path='/viewvehicle' element={<ViewVehicle />} />
+                <Route path='/editvehicle' element={<EditVehicle />} />
+
+
+
+
                 
                 <Route path='/tracker' element={<TrackerCard />} />
 
