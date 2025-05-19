@@ -76,25 +76,6 @@ const cardData = [
   },
 ];
 
-const createData = (id, orderby, date, namep, pickup, named, drop, contact) => ({
-  id,
-  orderby,
-  date,
-  namep,
-  pickup,
-  named,
-  drop,
-  contact,
-});
-
-const initialRows = [
-  createData(1, "Customer A", "2023-05-15", "John Smith", "Mumbai", "Raj Sharma", "Delhi", "9876543210"),
-  createData(2, "Customer B", "2023-05-16", "Priya Patel", "Bangalore", "Amit Singh", "Hyderabad", "8765432109"),
-  createData(3, "Customer C", "2023-05-17", "Rahul Verma", "Chennai", "Neha Gupta", "Kolkata", "7654321098"),
-  createData(4, "Customer D", "2023-05-18", "Sneha Joshi", "Pune", "Vikram Rao", "Ahmedabad", "6543210987"),
-  createData(5, "Customer E", "2023-05-19", "Arun Kumar", "Jaipur", "Meera Nair", "Lucknow", "5432109876"),
-];
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) return -1;
   if (b[orderBy] > a[orderBy]) return 1;
@@ -118,17 +99,15 @@ function stableSort(array, comparator) {
 
 const headCells = [
   { id: "sno", label: "S.No", sortable: false },
-  { id: "orderby", label: "Order By", sortable: true },
+  { id: "bookingid", label: "Booking  ID", sortable: true },
   { id: "date", label: "Date", sortable: true },
-  { id: "namep", label: "Sender Name", sortable: true },
   { id: "pickup", label: "Pick Up", sortable: false },
-  { id: "named", label: "Receiver Name", sortable: false },
   { id: "drop", label: "Drop", sortable: false },
-  { id: "contact", label: "Contact", sortable: false },
+  { id: "revenue", label: "Revenue (in Rupees)", sortable: false },
   { id: "action", label: "Action", sortable: false },
 ];
 
-const BookingCard = () => {
+const TotalRevenue = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const cardColor = "#0155a5";
@@ -139,13 +118,11 @@ const BookingCard = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
-  const [bookings, setBookings] = useState(initialRows);
+  const [bookings, setBookings] = useState([]); // ✅ fixed here
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [bookingToDelete, setBookingToDelete] = useState(null);
 
-  const handleAdd = () => {
-    navigate("/bookingform");
-  };
+  const handleAdd = () => navigate("/bookingform");
 
   const handleCardClick = (cardId, route) => {
     setActiveCard(cardId);
@@ -376,4 +353,4 @@ const BookingCard = () => {
   );
 };
 
-export default BookingCard;
+export default TotalRevenue;

@@ -241,7 +241,7 @@ const VehicleCard = () => {
                   activeCard === card.id
                     ? `2px solid ${cardColor}`
                     : "2px solid transparent",
-                backgroundColor:
+                backgroundColor: 
                   activeCard === card.id ? cardLightColor : "background.paper",
                 transition: "all 0.3s ease",
                 "&:hover": {
