@@ -118,7 +118,7 @@ const TotalRevenue = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
-  const [bookings, setBookings] = useState([]); // ✅ fixed here
+  const [bookings, setBookings] = useState([]); 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [bookingToDelete, setBookingToDelete] = useState(null);
 
@@ -295,13 +295,13 @@ const TotalRevenue = () => {
                 .map((row, index) => (
                   <TableRow key={row.id}>
                     <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                    <TableCell>{row.orderby}</TableCell>
+                    <TableCell>{row.sno}</TableCell>
+                    <TableCell>{row.bookingid}</TableCell>
                     <TableCell>{row.date}</TableCell>
-                    <TableCell>{row.namep}</TableCell>
                     <TableCell>{row.pickup}</TableCell>
-                    <TableCell>{row.named}</TableCell>
                     <TableCell>{row.drop}</TableCell>
-                    <TableCell>{row.contact}</TableCell>
+                    <TableCell>{row.revenue}</TableCell>
+                    <TableCell>{row.action}</TableCell>
                     <TableCell>
                       <Box sx={{ display: "flex", gap: 1 }}>
                         <IconButton color="info" onClick={() => handleView(row)}>
