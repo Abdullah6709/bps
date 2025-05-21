@@ -27,6 +27,9 @@ import EditQuotation from '../Pages/Admin/Quotation/Form/EditQuotation';
 import ViewVehicle from '../Pages/Admin/Vehicle/Form/ViewVehicle'
 import EditVehicle from '../Pages/Admin/Vehicle/Form/EditVehicle'
 import TotalRevenue from '../Pages/Admin/Booking/TotalRevenue';
+import UserForm from '../Pages/Admin/Manage User/Form/UserForm';
+import ViewUser from  '../Pages/Admin/Manage User/Form/ViewUser';
+import EditUser from  '../Pages/Admin/Manage User/Form/EditUser';
 const MainRoute = () => {
     const isAuthenticated = true; // Replace with real auth check
 
@@ -77,6 +80,9 @@ const MainRoute = () => {
                 
                 <Route path='/ladger' element={<LedgerCard />} />
                 <Route path='/users' element={<UserCard />} />
+                <Route path='/userform' element={<UserForm/>} />
+                <Route path='/viewuser' element={<ViewUser/>} />
+                <Route path='/edituser' element={<EditUser/>} />
 
                 {/* station routing  */}
                 <Route path='/station' element={<StationCard />} />
